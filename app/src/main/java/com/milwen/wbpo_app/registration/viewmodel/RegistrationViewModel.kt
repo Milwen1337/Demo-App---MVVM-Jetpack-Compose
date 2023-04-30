@@ -26,7 +26,7 @@ class RegistrationViewModel: MainViewModel() {
             apiCall(
                 { repository.registerUser(UserRegisterData(email, password)) },
                 onError = { err->
-                    App.log("RegistrationViewModel: registerUser: response error: ${err.message}")
+                    App.log("RegistrationViewModel: registerUser: response error: ${err.apiCallError?.error}")
                 },
                 onSuccess = { success ->
                     App.log("RegistrationViewModel: registerUser: response success: ${success.data.toString()}")

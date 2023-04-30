@@ -2,6 +2,7 @@ package com.milwen.wbpo_app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.milwen.wbpo_app.api.ApiCallError
 import com.milwen.wbpo_app.api.ApiCallResponse
 import com.milwen.wbpo_app.application.App
 import kotlinx.coroutines.Dispatchers
@@ -15,7 +16,7 @@ open class MainViewModel: ViewModel() {
 
     fun <T> apiCall(
         apiCall: suspend () -> Response<T>,
-        onError: (ApiCallResponse.Error<T>)->Unit,
+        onError: (ApiCallResponse.Error)->Unit,
         onSuccess: (ApiCallResponse.Success<T>)->Unit): Job {
 
         return viewModelScope.launch(Dispatchers.IO){
@@ -27,9 +28,8 @@ open class MainViewModel: ViewModel() {
                     onSuccess(ApiCallResponse.Success(data = response.body()!!))
                 } else {
                     App.log("MainViewModel: response: error: response: ${response.raw()}")
-                    onError(ApiCallResponse.Error(errorMessage = response.errorBody().toString()))
+                    onError(ApiCallResponse.Error(errorBody = response.errorBody()))
                 }
-
             } catch (e: HttpException) {
                 onError(ApiCallResponse.Error(errorMessage = e.message ?: "Something went wrong"))
             } catch (e: IOException) {

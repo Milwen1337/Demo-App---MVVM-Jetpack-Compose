@@ -2,6 +2,7 @@ package com.milwen.wbpo_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.milwen.wbpo_app.application.App
@@ -14,9 +15,11 @@ import java.util.HashMap
 class MainActivity : AppCompatActivity() {
 
     var isFragmentStarting = false
+    lateinit var app: App
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        app = application as App
         if (savedInstanceState == null) {
             startFragment(RegistrationFragment())
         }

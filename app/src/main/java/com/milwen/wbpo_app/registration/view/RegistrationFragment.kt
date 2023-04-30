@@ -5,6 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import com.milwen.wbpo_app.R
+import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModel
 import com.milwen.wbpo_app.ui.main.BaseFragment
 
@@ -15,8 +17,9 @@ class RegistrationFragment: BaseFragment() {
         get() = "RegistrationFragment"
 
     private lateinit var viewModel: RegistrationViewModel
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreate(si: Bundle?) {
+        super.onCreate(si)
+        App.log("RegistrationViewModel: fragmentInit")
         viewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
     }
 
@@ -25,6 +28,6 @@ class RegistrationFragment: BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return inflater.inflate(R.layout.registration_fragment, container, false)
     }
 }

@@ -10,6 +10,8 @@ import android.os.*
 import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import com.milwen.wbpo_app.BuildConfig
+import com.milwen.wbpo_app.api.AppAPI
+import com.milwen.wbpo_app.database.AppDatabase
 
 class App : Application(){
 
@@ -63,6 +65,7 @@ class App : Application(){
         connMgr.registerNetworkCallback(nr, cb)
     }
 
+    private var database: AppDatabase? = null
     override fun onCreate() {
         super.onCreate()
         log("StabilityCheck: App.onCreate() - start")
@@ -70,6 +73,8 @@ class App : Application(){
         connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         checkNetworkConnected()
         initNetworkConnectivityCheck()
+        //init database on app start
+        database = AppDatabase.getInstance(applicationContext)
         log("StabilityCheck: App.onCreate() - end")
     }
 }

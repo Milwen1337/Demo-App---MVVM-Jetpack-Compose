@@ -2,13 +2,11 @@ package com.milwen.wbpo_app
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.milwen.wbpo_app.application.App
-import com.milwen.wbpo_app.registration.view.RegistrationFragment
 import com.milwen.wbpo_app.ui.main.BaseFragment
-import com.milwen.wbpo_app.ui.main.MainFragment
+import com.milwen.wbpo_app.userlist.view.UserListFragment
 import java.util.ArrayList
 import java.util.HashMap
 
@@ -21,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         app = application as App
         if (savedInstanceState == null) {
-            startFragment(RegistrationFragment())
+            startFragment(UserListFragment())
         }
     }
 

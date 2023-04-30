@@ -33,7 +33,7 @@ open class MainViewModel: ViewModel() {
             } catch (e: HttpException) {
                 onError(ApiCallResponse.Error(errorMessage = e.message ?: "Something went wrong"))
             } catch (e: IOException) {
-                onError(ApiCallResponse.Error("Please check your network connection"))
+                onError(ApiCallResponse.Error(errorMessage = e.message ?: "Something went wrong"))
             } catch (e: Exception) {
                 onError(ApiCallResponse.Error(errorMessage = e.message ?: "Something went wrong"))
             }

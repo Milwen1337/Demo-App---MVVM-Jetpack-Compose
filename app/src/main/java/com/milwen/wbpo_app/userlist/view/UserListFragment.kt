@@ -9,6 +9,7 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.material.imageview.ShapeableImageView
@@ -30,7 +31,7 @@ class UserListFragment: BaseFragment() {
     override val debugTitle: String
         get() = "UserListFragment"
 
-    private val adapter = Adapter()
+    private val _adapter = Adapter()
     private lateinit var viewModel: UserListViewModel
     override fun onCreate(si: Bundle?) {
         super.onCreate(si)
@@ -59,6 +60,11 @@ class UserListFragment: BaseFragment() {
                 changeTryAgainVisibility(false)
             }
         }
+
+        binding.list.apply {
+            adapter = _adapter
+            layoutManager = LinearLayoutManager(requireContext())
+        }
         return binding.root
     }
 
@@ -82,8 +88,9 @@ class UserListFragment: BaseFragment() {
         App.log("UserListFragment: updateUsers: ${users.first.size}")
         val followedUsers = users.second
         val viewUsers = users.first.map { usr-> UserItem(usr, followedUsers.find { it.id == usr.id } != null) }
-        adapter.items = viewUsers
-        adapter.notifyDataSetChanged()
+        App.log("UserListFragment: updateUsers: final ${viewUsers.size}")
+        _adapter.items = viewUsers
+        _adapter.notifyDataSetChanged()
     }
 
     enum class ViewItemType(val type: Int) {

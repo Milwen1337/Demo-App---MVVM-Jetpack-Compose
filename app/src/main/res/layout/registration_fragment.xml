@@ -46,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/userPassword"
+            android:background="@drawable/button_main"
             android:text="@string/button_register"
             app:onDoubleTouchProtectClick="@{() -> viewModel.onRegister()}"/>
 

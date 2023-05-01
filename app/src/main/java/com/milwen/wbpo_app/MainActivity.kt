@@ -23,6 +23,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         app = application as App
+        supportActionBar?.let {  }
         if (savedInstanceState == null) {
             registerOrList()
         }

@@ -39,13 +39,6 @@ class UserListViewModel(val app: App): MainViewModel(){
     private val _maybeLoadAgain = MutableLiveData(false)
     val maybeLoadAgain: LiveData<Boolean> = _maybeLoadAgain
 
-    private val _scrollPosition = MutableLiveData<Int>()
-    val scrollPosition: LiveData<Int>
-        get() = _scrollPosition
-
-    private val _showAdditionalLoading = MutableLiveData(false)
-    val showAdditionalLoading: LiveData<Boolean> = _showAdditionalLoading
-
     init {
         App.log("UserListViewModel: init")
         loadUsers(true, 1, DEFAULT_USER_COUNT)

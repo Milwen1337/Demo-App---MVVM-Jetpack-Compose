@@ -61,9 +61,6 @@ class UserListFragment: BaseFragment() {
             maybeLoadAgain.observe(viewLifecycleOwner){ maybeLoadAgain->
                 changeTryAgainVisibility(maybeLoadAgain)
             }
-            scrollPosition.observe(viewLifecycleOwner){ scrollPosition ->
-                scrollToLastPosition(scrollPosition?:0)
-            }
         }
 
         binding.list.apply {
@@ -117,10 +114,6 @@ class UserListFragment: BaseFragment() {
         App.log("UserListFragment: updateUsers: final ${viewUsers.size}")
         _adapter.items = adapterItems
         _adapter.notifyItemRangeChanged(adapterItems.size - itemCount, itemCount)
-    }
-
-    private fun scrollToLastPosition(lastPosition: Int){
-        (binding.list.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(lastPosition, 0)
     }
 
     enum class ViewItemType(val type: Int) {

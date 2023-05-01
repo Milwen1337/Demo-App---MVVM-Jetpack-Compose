@@ -8,9 +8,10 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.*
 import android.util.Log
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import com.milwen.wbpo_app.BuildConfig
-import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.database.AppDatabase
 
 class App : Application(){
@@ -31,6 +32,11 @@ class App : Application(){
         fun logLongString(s: String){
             val maxLogSize = 1000
             s.chunked(maxLogSize).forEach { log(it) }
+        }
+
+        fun showToast(c: Context, @StringRes id: Int, long: Boolean = false) = showToast(c, c.getText(id), long)
+        fun showToast(c: Context, s: CharSequence, long: Boolean = false) {
+            Toast.makeText(c, s, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -65,7 +71,7 @@ class App : Application(){
         connMgr.registerNetworkCallback(nr, cb)
     }
 
-    private var database: AppDatabase? = null
+    var database: AppDatabase? = null
     override fun onCreate() {
         super.onCreate()
         log("StabilityCheck: App.onCreate() - start")

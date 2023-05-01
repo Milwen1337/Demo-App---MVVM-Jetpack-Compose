@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.registration.view.RegistrationFragment
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
 import java.util.ArrayList
@@ -19,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         app = application as App
         if (savedInstanceState == null) {
-            startFragment(UserListFragment())
+            startFragment(RegistrationFragment())
         }
     }
 

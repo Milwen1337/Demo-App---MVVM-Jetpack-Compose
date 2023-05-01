@@ -25,6 +25,8 @@ open class ApiCallResponse<T>(
                 errorBody?.let {
                     val json = it.string()
                     apiCallError = Gson().fromJson(json, object : TypeToken<ApiCallError>() {}.type)
+                }?:kotlin.run {
+                    apiCallError = ApiCallError("Something went wrong")
                 }
             } catch (e: IOException) {
                 apiCallError = ApiCallError(e.message ?: "Error parsing error response")

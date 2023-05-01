@@ -8,6 +8,9 @@ import com.milwen.wbpo_app.registration.model.User
 
 @Dao
 interface UserDAO {
+    @Query("SELECT * FROM logged_in_user LIMIT 1")
+    fun getUser(): User?
+
     @Query("SELECT * FROM logged_in_user WHERE token LIKE :token LIMIT 1")
     fun findByToken(token: String): User
 

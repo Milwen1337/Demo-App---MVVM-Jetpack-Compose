@@ -8,6 +8,10 @@ import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.registration.view.RegistrationFragment
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.ArrayList
 import java.util.HashMap
 
@@ -20,7 +24,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         app = application as App
         if (savedInstanceState == null) {
-            startFragment(RegistrationFragment())
+            registerOrList()
+        }
+    }
+
+    private fun registerOrList(){
+        CoroutineScope(Dispatchers.IO).launch {
+            app.database?.userDao()?.getUser()?.let {
+                startFragment(UserListFragment())
+            }?:kotlin.run {
+                startFragment(RegistrationFragment())
+            }
         }
     }
 

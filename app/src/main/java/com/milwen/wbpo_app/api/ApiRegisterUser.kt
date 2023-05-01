@@ -1,5 +1,6 @@
 package com.milwen.wbpo_app.api
 
+import com.milwen.wbpo_app.registration.model.User
 import com.milwen.wbpo_app.registration.model.UserRegisterData
 import com.milwen.wbpo_app.registration.model.UserRegisterResponse
 import retrofit2.Response
@@ -13,5 +14,5 @@ interface ApiRegisterUser {
         "Accept: application/json;charset=utf-8"
     )
     @POST("register/")
-    suspend fun registerUser(@Body userData: UserRegisterData) : Response<UserRegisterResponse>
+    suspend fun registerUser(@Body userData: UserRegisterData) : Response<User>
 }

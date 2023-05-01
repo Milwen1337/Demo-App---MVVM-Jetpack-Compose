@@ -63,6 +63,7 @@ class UserListFragment: BaseFragment() {
     }
 
     private fun changeViewState(isLoading: Boolean){
+        App.log("UserListFragment: changeViewState: isLoading: $isLoading")
         binding.apply {
             list.setVisibleNotGone(!isLoading)
             mProgressBar.setVisibleNotGone(isLoading)
@@ -78,6 +79,7 @@ class UserListFragment: BaseFragment() {
     }
 
     private fun updateUsers(users: Pair<List<LoadedUser>, List<FollowedUser>>){
+        App.log("UserListFragment: updateUsers: ${users.first.size}")
         val followedUsers = users.second
         val viewUsers = users.first.map { usr-> UserItem(usr, followedUsers.find { it.id == usr.id } != null) }
         adapter.items = viewUsers

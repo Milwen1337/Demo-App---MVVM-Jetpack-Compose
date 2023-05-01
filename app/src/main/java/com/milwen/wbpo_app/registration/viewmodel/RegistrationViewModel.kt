@@ -11,10 +11,14 @@ import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.isEmailValid
 import com.milwen.wbpo_app.onDoubleTouchProtectClick
+import com.milwen.wbpo_app.registration.model.User
 import com.milwen.wbpo_app.registration.model.UserRegisterData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class RegistrationViewModel: MainViewModel() {
+class RegistrationViewModel(val app: App): MainViewModel() {
     private val repository = AppAPI.getInstance().create(ApiRegisterUser::class.java)
+    private val db = app.database
 
     var email = MutableLiveData<String>()
     var password = MutableLiveData<String>()
@@ -85,9 +89,17 @@ class RegistrationViewModel: MainViewModel() {
                     App.log("RegistrationViewModel: registerUser: response error: ${err.apiCallError?.error}")
                 },
                 onSuccess = { success ->
+                    App.log("RegistrationViewModel: registerUser: response success: ${success.data.toString()}")
+                    withContext(Dispatchers.IO){
+                        success.data?.let { user->
+                            db?.let { db->
+                                App.log("RegistrationViewModel: registerUser: response success: insertUser")
+                                db.userDao().insertUser(user)
+                            }
+                        }
+                    }
                     _isRegButtonEnabled.postValue(true)
                     _finishRegistration.postValue(true)
-                    App.log("RegistrationViewModel: registerUser: response success: ${success.data.toString()}")
                 }
             )
         }

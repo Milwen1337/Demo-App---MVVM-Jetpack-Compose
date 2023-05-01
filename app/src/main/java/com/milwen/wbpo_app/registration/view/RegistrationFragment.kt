@@ -1,8 +1,6 @@
 package com.milwen.wbpo_app.registration.view
 
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +10,7 @@ import com.milwen.wbpo_app.R
 import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.databinding.RegistrationFragmentBinding
 import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModel
+import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModelFactory
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
 
@@ -26,7 +25,7 @@ class RegistrationFragment: BaseFragment() {
     override fun onCreate(si: Bundle?) {
         super.onCreate(si)
         App.log("RegistrationViewModel: fragmentInit")
-        viewModel = ViewModelProvider(this)[RegistrationViewModel::class.java]
+        viewModel = ViewModelProvider(this, RegistrationViewModelFactory(app))[RegistrationViewModel::class.java]
     }
 
     private lateinit var binding: RegistrationFragmentBinding

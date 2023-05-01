@@ -28,6 +28,7 @@ open class MainViewModel: ViewModel() {
                 }
 
                 if (response.isSuccessful) {
+                    App.log("MainViewModel: response: successful: responseBody: ${response.body()}")
                     App.log("MainViewModel: response: successful: response: ${response.message()}")
                     onSuccess(ApiCallResponse.Success(data = response.body()!!))
                 } else {

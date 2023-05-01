@@ -132,8 +132,8 @@ class UserListFragment: BaseFragment() {
         }
 
         private fun setButtonState(isFollowed: Boolean){
-            followButton.setVisibleNotGone(isFollowed)
-            unfollowButton.setVisibleNotGone(!isFollowed)
+            followButton.setVisibleNotGone(!isFollowed)
+            unfollowButton.setVisibleNotGone(isFollowed)
         }
 
         private fun loadAvatar(avatar: String?){
@@ -186,7 +186,7 @@ class UserListFragment: BaseFragment() {
                     (vh as? UserItemViewHolder)?.bind(
                         r as UserItem,
                         onFollowClick = {
-                            //TODO CHANGE FOLLOW STATE
+                            viewModel.changeFollowState(r.t)
                         }
                     )
                 }
@@ -194,5 +194,4 @@ class UserListFragment: BaseFragment() {
             }
         }
     }
-
 }

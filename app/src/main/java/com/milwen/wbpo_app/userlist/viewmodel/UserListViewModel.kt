@@ -2,6 +2,7 @@ package com.milwen.wbpo_app.userlist.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.milwen.wbpo_app.MainViewModel
 import com.milwen.wbpo_app.api.ApiGetUsers
 import com.milwen.wbpo_app.api.AppAPI
@@ -9,6 +10,7 @@ import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.userlist.model.FollowedUser
 import com.milwen.wbpo_app.userlist.model.LoadedUser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class UserListViewModel(val app: App): MainViewModel(){
@@ -37,6 +39,33 @@ class UserListViewModel(val app: App): MainViewModel(){
 
     fun loadAgain(){
         loadUsers(1, 5)
+    }
+
+    fun changeFollowState(user: LoadedUser){
+        viewModelScope.launch(Dispatchers.Main){
+            withContext(Dispatchers.IO){
+                db?.let { db->
+                    val foundUser = db.followedUsers().getFollowedUserOrNull(user.id)
+                    foundUser?.let { fu->
+                        db.followedUsers().deleteFollowedUser(fu)
+                    }?:kotlin.run { db.followedUsers().addFollowedUser(FollowedUser(user.id)) }
+
+                    val followedUsers = withContext(Dispatchers.IO) {
+                        db.followedUsers().getFollowedUsers().orEmpty()
+                    }
+                    withContext(Dispatchers.Main){
+                        refreshData(followedUsers)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun refreshData(followedUsers: List<FollowedUser>){
+        App.log("UserListViewModel: refreshData: followed: ${followedUsers.size}")
+        val currentUsers = users.value?.first.orEmpty().toMutableList()
+        App.log("UserListViewModel: refreshData: current: ${currentUsers.size}")
+        _users.value = Pair(currentUsers, followedUsers)
     }
 
     private fun loadUsers(page: Int, perPage: Int){

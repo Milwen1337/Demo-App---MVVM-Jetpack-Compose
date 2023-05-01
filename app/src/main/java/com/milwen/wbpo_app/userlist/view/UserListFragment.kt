@@ -53,11 +53,12 @@ class UserListFragment: BaseFragment() {
             }
             toastMessage.observe(viewLifecycleOwner) { message->
                 showDataLoadingError(message)
-                changeTryAgainVisibility(true)
             }
             areDataLoading.observe(viewLifecycleOwner) { areDataLoading->
                 changeViewState(areDataLoading)
-                changeTryAgainVisibility(false)
+            }
+            maybeLoadAgain.observe(viewLifecycleOwner){ maybeLoadAgain->
+                changeTryAgainVisibility(maybeLoadAgain)
             }
         }
 

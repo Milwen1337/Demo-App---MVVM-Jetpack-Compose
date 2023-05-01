@@ -27,6 +27,8 @@ class UserListViewModel(val app: App): MainViewModel(){
     private val _areDataLoading = MutableLiveData(true)
     val areDataLoading: LiveData<Boolean> = _areDataLoading
 
+    private val _maybeLoadAgain = MutableLiveData(false)
+    val maybeLoadAgain: LiveData<Boolean> = _maybeLoadAgain
 
     init {
         App.log("UserListViewModel: init")
@@ -45,6 +47,7 @@ class UserListViewModel(val app: App): MainViewModel(){
             onError = { err->
                 err.apiCallError?.error?.let { e-> _toastMessage.postValue(e) }
                 _areDataLoading.postValue(false)
+                _maybeLoadAgain.postValue(true)
                 App.log("UserListViewModel: loadUsers: response error: ${err.apiCallError?.error}")
             },
             onSuccess = { success ->
@@ -60,7 +63,10 @@ class UserListViewModel(val app: App): MainViewModel(){
                     }
                     App.log("UserListViewModel: loadUsers: response success: currentUsers: ${currentUsers.size}")
                     App.log("UserListViewModel: loadUsers: response success: followedUsers: ${followedUsers.size}")
+                    _maybeLoadAgain.postValue(false)
                     _users.value = Pair(currentUsers, followedUsers)
+                }?:kotlin.run {
+                    _maybeLoadAgain.postValue(true)
                 }
                 _areDataLoading.postValue(false)
             }

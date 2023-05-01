@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WBPO-App</string>
+    <string name="registration_fragment_title">Registrácia používateľa</string>
+    <string name="registration_info">Vitajte v aplikácii.\nPre pokračovanie je potrebné sa zaregistrovať.</string>
+    <string name="email_label">E-mail</string>
+    <string name="password_label">Heslo</string>
+    <string name="button_register">Registrovať sa</string>
+    <string name="user_list_fragment_title">Zoznam používateľov</string>
+    <string name="button_load_again">Načítať znova</string>
+</resources>

@@ -24,6 +24,7 @@ import com.milwen.wbpo_app.userlist.model.LoadedUser
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModel
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModelFactory
 import com.bumptech.glide.Glide
+import com.milwen.wbpo_app.userlist.viewmodel.UserPayload
 
 class UserListFragment: BaseFragment() {
     override val titleId: Int
@@ -60,11 +61,28 @@ class UserListFragment: BaseFragment() {
             maybeLoadAgain.observe(viewLifecycleOwner){ maybeLoadAgain->
                 changeTryAgainVisibility(maybeLoadAgain)
             }
+            scrollPosition.observe(viewLifecycleOwner){ scrollPosition ->
+                scrollToLastPosition(scrollPosition?:0)
+            }
         }
 
         binding.list.apply {
             adapter = _adapter
             layoutManager = LinearLayoutManager(requireContext())
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                    val totalItemCount = layoutManager.itemCount - 1
+                    val lastCompletelyVisiblePosition = layoutManager.findLastCompletelyVisibleItemPosition()
+                    App.log("UserListFragment: onScrolled: lastCompletelyVisiblePosition: $lastCompletelyVisiblePosition, totalItemCount: $totalItemCount")
+                    if (lastCompletelyVisiblePosition == totalItemCount) {
+                        viewModel.loadAdditionalUsers()
+                    }
+                }
+            })
+
         }
         return binding.root
     }
@@ -82,16 +100,27 @@ class UserListFragment: BaseFragment() {
     }
 
     private fun changeTryAgainVisibility(isVisible: Boolean){
+        App.log("UserListFragment: changeTryAgainVisibility: $isVisible")
         binding.loadAgainButton.setVisibleNotGone(isVisible)
     }
 
-    private fun updateUsers(users: Pair<List<LoadedUser>, List<FollowedUser>>){
-        App.log("UserListFragment: updateUsers: ${users.first.size}")
-        val followedUsers = users.second
-        val viewUsers = users.first.map { usr-> UserItem(usr, followedUsers.find { it.id == usr.id } != null) }
+    private fun updateUsers(userPayload: UserPayload){
+        App.log("UserListFragment: updateUsers: ${userPayload.users.size}")
+        val adapterItems = mutableListOf<UserAdapterItem>()
+        val followedUsers = userPayload.followedUsers
+        val viewUsers = userPayload.users.map { usr-> UserItem(usr, followedUsers.find { it.id == usr.id } != null) }
+        val itemCount = _adapter.itemCount
+        adapterItems.apply {
+            addAll(viewUsers)
+            if (!userPayload.fullyLoaded) add(LoaderItem())
+        }
         App.log("UserListFragment: updateUsers: final ${viewUsers.size}")
-        _adapter.items = viewUsers
-        _adapter.notifyDataSetChanged()
+        _adapter.items = adapterItems
+        _adapter.notifyItemRangeChanged(adapterItems.size - itemCount, itemCount)
+    }
+
+    private fun scrollToLastPosition(lastPosition: Int){
+        (binding.list.layoutManager as? LinearLayoutManager)?.scrollToPositionWithOffset(lastPosition, 0)
     }
 
     enum class ViewItemType(val type: Int) {

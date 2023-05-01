@@ -13,18 +13,25 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+data class UserPayload(val users: List<LoadedUser>, val followedUsers: List<FollowedUser>, val fullyLoaded: Boolean = false)
 class UserListViewModel(val app: App): MainViewModel(){
+    companion object{
+        const val DEFAULT_USER_COUNT = 5
+    }
+
     private val repository = AppAPI.getInstance().create(ApiGetUsers::class.java)
     private val db = app.database
 
     // LiveData holding loaded user list and cached followed user list -> used in View
-    private val _users = MutableLiveData<Pair<List<LoadedUser>, List<FollowedUser>>>()
-    val users: LiveData<Pair<List<LoadedUser>, List<FollowedUser>>>
+    private val _users = MutableLiveData<UserPayload>()
+    val users: LiveData<UserPayload>
         get() = _users
 
     private val _toastMessage = MutableLiveData<String>()
     val toastMessage: LiveData<String>
         get() = _toastMessage
+
+   private var loadAdditinalUsers = false
 
     private val _areDataLoading = MutableLiveData(true)
     val areDataLoading: LiveData<Boolean> = _areDataLoading
@@ -32,13 +39,20 @@ class UserListViewModel(val app: App): MainViewModel(){
     private val _maybeLoadAgain = MutableLiveData(false)
     val maybeLoadAgain: LiveData<Boolean> = _maybeLoadAgain
 
+    private val _scrollPosition = MutableLiveData<Int>()
+    val scrollPosition: LiveData<Int>
+        get() = _scrollPosition
+
+    private val _showAdditionalLoading = MutableLiveData(false)
+    val showAdditionalLoading: LiveData<Boolean> = _showAdditionalLoading
+
     init {
         App.log("UserListViewModel: init")
-        loadUsers(1, 5)
+        loadUsers(true, 1, DEFAULT_USER_COUNT)
     }
 
     fun loadAgain(){
-        loadUsers(1, 5)
+        loadUsers(true, 1, DEFAULT_USER_COUNT)
     }
 
     fun changeFollowState(user: LoadedUser){
@@ -63,43 +77,71 @@ class UserListViewModel(val app: App): MainViewModel(){
 
     private fun refreshData(followedUsers: List<FollowedUser>){
         App.log("UserListViewModel: refreshData: followed: ${followedUsers.size}")
-        val currentUsers = users.value?.first.orEmpty().toMutableList()
+        val currentUsers = users.value?.users.orEmpty().toMutableList()
         App.log("UserListViewModel: refreshData: current: ${currentUsers.size}")
-        _users.value = Pair(currentUsers, followedUsers)
+        _users.value = UserPayload(currentUsers, followedUsers, fullyLoaded)
     }
 
-    private fun loadUsers(page: Int, perPage: Int){
+    private var currentPage = 1
+    private var totalPages = 1
+    private var fullyLoaded = false
+    fun loadAdditionalUsers(){
+        if (!loadAdditinalUsers) {
+            loadAdditinalUsers = true
+            val currentUsers = users.value?.users.orEmpty().toMutableList()
+            if (currentPage != totalPages){
+                loadUsers(false, currentPage, DEFAULT_USER_COUNT){
+                    loadAdditinalUsers = false
+                    App.log("UserListViewModel: loadAdditionalUsers: onLoaded ${currentUsers.size}")
+                }
+            } else {
+                //no more pages
+            }
+        }
+    }
+
+    private fun loadUsers(loadedFirstTime: Boolean, page: Int, perPage: Int, onLoaded: (()->Unit)? = null){
         App.log("UserListViewModel: loadUsers")
-        _areDataLoading.postValue(true)
+        if (loadedFirstTime) _areDataLoading.postValue(true)
         apiCall(
             { repository.getUsers(page, perPage) },
             onError = { err->
                 err.apiCallError?.error?.let { e-> _toastMessage.postValue(e) }
-                _areDataLoading.postValue(false)
-                _maybeLoadAgain.postValue(true)
+                if (loadedFirstTime) _areDataLoading.postValue(false)
+                if (loadedFirstTime) _maybeLoadAgain.postValue(true)
                 App.log("UserListViewModel: loadUsers: response error: ${err.apiCallError?.error}")
+                onLoaded?.invoke()
             },
             onSuccess = { success ->
                 App.log("UserListViewModel: loadUsers: response success: ${success.data.toString()}")
-                success.data?.data?.let { newUsers->
-                    val currentUsers = users.value?.first.orEmpty().toMutableList()
+                success.data?.let { userData->
+                    totalPages = userData.total_pages
+                    incrementPages(userData.page, userData.total_pages)
+                    val currentUsers = users.value?.users.orEmpty().toMutableList()
                     val followedUsers = withContext(Dispatchers.IO) {
                         db?.followedUsers()?.getFollowedUsers().orEmpty()
                     }
                     currentUsers.apply {
-                        clear()
-                        addAll(newUsers)
+                        addAll(userData.data)
                     }
                     App.log("UserListViewModel: loadUsers: response success: currentUsers: ${currentUsers.size}")
                     App.log("UserListViewModel: loadUsers: response success: followedUsers: ${followedUsers.size}")
-                    _maybeLoadAgain.postValue(false)
-                    _users.value = Pair(currentUsers, followedUsers)
+                    if (loadedFirstTime) _maybeLoadAgain.postValue(false)
+                    fullyLoaded = currentPage == totalPages
+                    _users.value = UserPayload(currentUsers, followedUsers, fullyLoaded)
+                    onLoaded?.invoke()
                 }?:kotlin.run {
-                    _maybeLoadAgain.postValue(true)
+                    App.log("UserListViewModel: loadUsers: response success: currentUsers: null")
+                    if (loadedFirstTime) _maybeLoadAgain.postValue(false)
+                    onLoaded?.invoke()
                 }
-                _areDataLoading.postValue(false)
+                if (loadedFirstTime) _areDataLoading.postValue(false)
             }
         )
+    }
+
+    private fun incrementPages(current: Int, total: Int){
+        if (current < total) currentPage++
     }
 
 }

@@ -8,6 +8,7 @@ import com.milwen.wbpo_app.application.App
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
@@ -17,11 +18,14 @@ open class MainViewModel: ViewModel() {
     fun <T> apiCall(
         apiCall: suspend () -> Response<T>,
         onError: (ApiCallResponse.Error)->Unit,
-        onSuccess: (ApiCallResponse.Success<T>)->Unit): Job {
+        onSuccess: suspend (ApiCallResponse.Success<T>)->Unit): Job {
 
-        return viewModelScope.launch(Dispatchers.IO){
+        return viewModelScope.launch(Dispatchers.Main){
             try {
-                val response: Response<T> = apiCall()
+                val response: Response<T> =
+                withContext(Dispatchers.IO){
+                    apiCall()
+                }
 
                 if (response.isSuccessful) {
                     App.log("MainViewModel: response: successful: response: ${response.message()}")

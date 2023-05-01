@@ -1,6 +1,8 @@
 package com.milwen.wbpo_app.registration.view
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,8 +16,8 @@ import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
 
 class RegistrationFragment: BaseFragment() {
-    override val title: String
-        get() = getString(R.string.registration_fragment_title)
+    override val titleId: Int
+        get() = R.string.registration_fragment_title
     override val debugTitle: String
         get() = "RegistrationFragment"
 
@@ -34,6 +36,8 @@ class RegistrationFragment: BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.registration_fragment, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
         viewModel.apply {
             isRegButtonEnabled.observe(viewLifecycleOwner) { isEnabled ->
                 changeViewStates(isEnabled)

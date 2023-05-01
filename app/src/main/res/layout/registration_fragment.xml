@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:hint="@string/email_label"
-            android:text="@={viewModel.registerData.email}"
+            android:text="@={viewModel.email}"
             android:autofillHints="" />
 
         <EditText
@@ -38,7 +38,7 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:hint="@string/password_label"
-            android:text="@={viewModel.registerData.password}"
+            android:text="@={viewModel.password}"
             android:autofillHints="" />
 
         <Button

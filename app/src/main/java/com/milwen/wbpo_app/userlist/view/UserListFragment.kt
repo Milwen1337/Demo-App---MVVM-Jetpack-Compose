@@ -25,8 +25,8 @@ import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModelFactory
 import com.bumptech.glide.Glide
 
 class UserListFragment: BaseFragment() {
-    override val title: String
-        get() = getString(R.string.user_list_fragment_title)
+    override val titleId: Int
+        get() = R.string.user_list_fragment_title
     override val debugTitle: String
         get() = "UserListFragment"
 
@@ -44,6 +44,8 @@ class UserListFragment: BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.user_list_fragment, container, false)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
         viewModel.apply {
             users.observe(viewLifecycleOwner) { users->
                 updateUsers(users)

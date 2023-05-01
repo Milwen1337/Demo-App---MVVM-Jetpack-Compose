@@ -2,39 +2,34 @@ package com.milwen.wbpo_app.registration.viewmodel
 
 import android.view.View
 import androidx.databinding.BindingAdapter
-import androidx.databinding.Observable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.milwen.wbpo_app.MainViewModel
 import com.milwen.wbpo_app.api.ApiRegisterUser
 import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.isEmailValid
 import com.milwen.wbpo_app.onDoubleTouchProtectClick
-import com.milwen.wbpo_app.registration.model.RegisterData
 import com.milwen.wbpo_app.registration.model.UserRegisterData
 
 class RegistrationViewModel: MainViewModel() {
     private val repository = AppAPI.getInstance().create(ApiRegisterUser::class.java)
 
-    val registerData = RegisterData()
-    var userEmailCallback = object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-            validateData()
-        }
-    }
+    var email = MutableLiveData<String>()
+    var password = MutableLiveData<String>()
 
-    var userPasswordCallback = object : Observable.OnPropertyChangedCallback() {
-        override fun onPropertyChanged(sender: Observable?, propertyId: Int) {
-            validateData()
-        }
-    }
+    private val emailObserver = Observer<String> { validateData() }
+    private val passwordObserver = Observer<String> { validateData() }
 
-    @BindingAdapter("onDoubleTouchProtectClick")
-    fun View.setOnDoubleTouchProtectClickListener(clickListener: View.OnClickListener) {
-        setOnClickListener {
-            this.onDoubleTouchProtectClick {
-                clickListener.onClick(this)
+    companion object {
+        @BindingAdapter("onDoubleTouchProtectClick")
+        @JvmStatic
+        fun View.setOnDoubleTouchProtectClickListener(clickListener: View.OnClickListener) {
+            setOnClickListener {
+                this.onDoubleTouchProtectClick {
+                    clickListener.onClick(this)
+                }
             }
         }
     }
@@ -56,21 +51,20 @@ class RegistrationViewModel: MainViewModel() {
         App.log("RegistrationViewModel: init")
         //userEmail = "eve.holt@reqres.in"
         //userPassword = "pistol"
+        initFieldObservers()
+    }
 
-        initDataObservables()
+    private fun initFieldObservers(){
+        email.observeForever(emailObserver)
+        password.observeForever(passwordObserver)
     }
 
     private fun validateData(){
-        val email = registerData.email
-        val password = registerData.password
-        _isDataValid.postValue(!password.isNullOrBlank() && !email.isNullOrBlank() && isEmailValid(email))
-    }
-
-    private fun initDataObservables(){
-        registerData.apply {
-            addOnPropertyChangedCallback(userEmailCallback)
-            addOnPropertyChangedCallback(userPasswordCallback)
-        }
+        App.log("RegistrationViewModel: validateData")
+        val mEmail: String? = email.value
+        val mPassword: String? = password.value
+        App.log("RegistrationViewModel: validateData: $mEmail, $mPassword")
+        _isDataValid.postValue(!mPassword.isNullOrBlank() && !mEmail.isNullOrBlank() && isEmailValid(mEmail))
     }
 
     fun onRegister() {
@@ -80,8 +74,8 @@ class RegistrationViewModel: MainViewModel() {
 
     private fun registerUser(){
         App.log("RegistrationViewModel: registerUser")
-        val email = registerData.email
-        val password = registerData.password
+        val email = email.value
+        val password = password.value
         if (email != null && password != null){
             apiCall(
                 { repository.registerUser(UserRegisterData(email, password)) },
@@ -101,10 +95,8 @@ class RegistrationViewModel: MainViewModel() {
 
     override fun onCleared() {
         super.onCleared()
-        registerData.apply {
-            removeOnPropertyChangedCallback(userEmailCallback)
-            removeOnPropertyChangedCallback(userPasswordCallback)
-        }
+        email.removeObserver(emailObserver)
+        password.removeObserver(passwordObserver)
     }
 
 }

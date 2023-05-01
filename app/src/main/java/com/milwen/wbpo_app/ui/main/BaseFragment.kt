@@ -14,6 +14,7 @@ import kotlinx.coroutines.*
 abstract class BaseFragment : Fragment(), CoroutineScope by MainScope() {
     protected lateinit var app: App
 
+    open val titleId: Int = 0 // title of the fragment
     open val title: String = ""
     abstract val debugTitle: String
     open val canGoBack = false // if set, activity shows back button, and this fragment is added on top of previous

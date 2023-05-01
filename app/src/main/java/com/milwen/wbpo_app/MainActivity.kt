@@ -114,7 +114,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateActivityUI() {
         supportActionBar?.let { ab ->
             getTopFragment()?.let {
-                title = it.title
+                title = getString(it.titleId)
                 ab.setDisplayHomeAsUpEnabled(it.showBackButton)
             }?: let {
                 title = null

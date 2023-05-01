@@ -8,6 +8,8 @@ import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.userlist.model.FollowedUser
 import com.milwen.wbpo_app.userlist.model.LoadedUser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class UserListViewModel(val app: App): MainViewModel(){
     private val repository = AppAPI.getInstance().create(ApiGetUsers::class.java)
@@ -49,11 +51,15 @@ class UserListViewModel(val app: App): MainViewModel(){
                 App.log("UserListViewModel: loadUsers: response success: ${success.data.toString()}")
                 success.data?.data?.let { newUsers->
                     val currentUsers = users.value?.first.orEmpty().toMutableList()
-                    val followedUsers = db?.followedUsers()?.getFollowedUsers().orEmpty()
+                    val followedUsers = withContext(Dispatchers.IO) {
+                        db?.followedUsers()?.getFollowedUsers().orEmpty()
+                    }
                     currentUsers.apply {
                         clear()
                         addAll(newUsers)
                     }
+                    App.log("UserListViewModel: loadUsers: response success: currentUsers: ${currentUsers.size}")
+                    App.log("UserListViewModel: loadUsers: response success: followedUsers: ${followedUsers.size}")
                     _users.value = Pair(currentUsers, followedUsers)
                 }
                 _areDataLoading.postValue(false)

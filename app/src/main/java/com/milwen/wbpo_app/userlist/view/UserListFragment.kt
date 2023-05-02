@@ -19,7 +19,6 @@ import com.milwen.wbpo_app.databinding.UserListFragmentBinding
 import com.milwen.wbpo_app.onDoubleTouchProtectClick
 import com.milwen.wbpo_app.setVisibleNotGone
 import com.milwen.wbpo_app.ui.main.BaseFragment
-import com.milwen.wbpo_app.userlist.model.FollowedUser
 import com.milwen.wbpo_app.userlist.model.LoadedUser
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModel
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModelFactory

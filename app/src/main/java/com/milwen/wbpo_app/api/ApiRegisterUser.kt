@@ -2,7 +2,6 @@ package com.milwen.wbpo_app.api
 
 import com.milwen.wbpo_app.registration.model.User
 import com.milwen.wbpo_app.registration.model.UserRegisterData
-import com.milwen.wbpo_app.registration.model.UserRegisterResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Headers

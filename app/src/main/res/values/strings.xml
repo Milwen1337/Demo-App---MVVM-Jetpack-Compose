@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WBPO-App</string>
+    <string name="app_name">WBPO-test application</string>
     <string name="registration_fragment_title">User registration</string>
     <string name="registration_info">Welcome in application.\nTo continue you have to create new account.</string>
     <string name="email_label">E-mail</string>

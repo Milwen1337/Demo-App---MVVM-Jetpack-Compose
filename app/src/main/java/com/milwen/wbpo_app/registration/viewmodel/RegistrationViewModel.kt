@@ -11,7 +11,6 @@ import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.isEmailValid
 import com.milwen.wbpo_app.onDoubleTouchProtectClick
-import com.milwen.wbpo_app.registration.model.User
 import com.milwen.wbpo_app.registration.model.UserRegisterData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -30,10 +29,8 @@ class RegistrationViewModel(val app: App): MainViewModel() {
         @BindingAdapter("onDoubleTouchProtectClick")
         @JvmStatic
         fun View.setOnDoubleTouchProtectClickListener(clickListener: View.OnClickListener) {
-            setOnClickListener {
-                this.onDoubleTouchProtectClick {
-                    clickListener.onClick(this)
-                }
+            this.onDoubleTouchProtectClick {
+                clickListener.onClick(this)
             }
         }
     }
@@ -51,10 +48,13 @@ class RegistrationViewModel(val app: App): MainViewModel() {
     val toastMessage: LiveData<String>
         get() = _toastMessage
 
+    /**
+     * For testing based on API documentation you have to type these credentials for successful registration
+     * email = eve.holt@reqres.in
+     * password = pistol
+     */
     init {
         App.log("RegistrationViewModel: init")
-        //userEmail = "eve.holt@reqres.in"
-        //userPassword = "pistol"
         initFieldObservers()
     }
 

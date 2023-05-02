@@ -2,7 +2,6 @@ package com.milwen.wbpo_app
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.milwen.wbpo_app.api.ApiCallError
 import com.milwen.wbpo_app.api.ApiCallResponse
 import com.milwen.wbpo_app.application.App
 import kotlinx.coroutines.Dispatchers

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WBPO-App</string>
+    <string name="app_name">WBPO-test application</string>
     <string name="registration_fragment_title">Registrácia používateľa</string>
     <string name="registration_info">Vitajte v aplikácii.\nPre pokračovanie je potrebné sa zaregistrovať.</string>
     <string name="email_label">E-mail</string>

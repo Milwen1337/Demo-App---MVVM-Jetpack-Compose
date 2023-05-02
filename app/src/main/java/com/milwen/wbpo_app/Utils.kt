@@ -2,8 +2,7 @@ package com.milwen.wbpo_app
 
 import android.os.SystemClock
 import android.view.View
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import com.milwen.wbpo_app.application.App
 import java.util.regex.Pattern
 
 private var lastClicked = 0L
@@ -38,17 +37,10 @@ fun View.setVisibleNotGone(on: Boolean, useAnim: Boolean = false){
     }
 }
 
-fun <A, B> LiveData<A>.zipWith(stream: LiveData<B>): LiveData<Pair<A, B>> {
-    val result = MediatorLiveData<Pair<A, B>>()
-    result.addSource(this) { a ->
-        if (a != null && stream.value != null) {
-            result.value = Pair(a, stream.value!!)
-        }
-    }
-    result.addSource(stream) { b ->
-        if (b != null && this.value != null) {
-            result.value = Pair(this.value!!, b)
-        }
-    }
-    return result
+fun post(delay: Int = 0, body: () -> Unit){
+    App.mainHandler.postDelayed(body, delay.toLong())
+}
+
+fun post(delay: Int, runnable: Runnable){
+    App.mainHandler.postDelayed(runnable, delay.toLong())
 }

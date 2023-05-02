@@ -3,13 +3,13 @@
     android:exitFadeDuration="200"
     android:enterFadeDuration="200">
     <item
-        android:state_pressed="true"
+        android:state_enabled="false"
         android:alpha="0.4"
         android:color="@color/main_color"
         />
     <item
-        android:state_enabled="false"
-        android:alpha="0.4"
+        android:state_pressed="true"
+        android:alpha="0.7"
         android:color="@color/main_color"
         />
     <item

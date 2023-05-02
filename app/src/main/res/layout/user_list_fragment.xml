@@ -16,7 +16,7 @@
             android:id="@+id/loadAgainButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_main"
+            style="@style/MainButton"
             android:layout_centerHorizontal="true"
             android:text="@string/button_load_again"
             app:onDoubleTouchProtectClick="@{() -> viewModel.loadAgain()}"/>

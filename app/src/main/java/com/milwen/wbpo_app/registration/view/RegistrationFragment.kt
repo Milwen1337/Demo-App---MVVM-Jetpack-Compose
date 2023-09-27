@@ -16,8 +16,10 @@ import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModelFactory
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class RegistrationFragment: BaseFragment() {
     override val titleId: Int
         get() = R.string.registration_fragment_title

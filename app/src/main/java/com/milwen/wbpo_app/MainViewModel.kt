@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.milwen.wbpo_app.api.ApiCallResponse
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.database.AppDatabase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -11,8 +13,13 @@ import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.IOException
+import javax.inject.Inject
 
-open class MainViewModel: ViewModel() {
+@HiltViewModel
+open class MainViewModel @Inject constructor(): ViewModel() {
+
+    @Inject
+    lateinit var appDatabase: AppDatabase
 
     fun <T> apiCall(
         apiCall: suspend () -> Response<T>,

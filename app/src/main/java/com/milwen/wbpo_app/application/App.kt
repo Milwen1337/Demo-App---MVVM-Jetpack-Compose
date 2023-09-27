@@ -12,13 +12,23 @@ import android.widget.Toast
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AppCompatDelegate
 import com.milwen.wbpo_app.BuildConfig
+import com.milwen.wbpo_app.MainActivity
+import com.milwen.wbpo_app.MainViewModel
 import com.milwen.wbpo_app.database.AppDatabase
+import dagger.BindsInstance
+import dagger.Component
+import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Singleton
 
+
+@HiltAndroidApp
 class App : Application(){
 
     @Suppress("unused")
     companion object {
         private const val LOG_TAG = "WBPO-App"
+        lateinit var instance: App
+            private set
         val mainHandler: Handler by lazy {
             HandlerThread("MyHandlerThread").let {
                 it.start()
@@ -71,16 +81,14 @@ class App : Application(){
         connMgr.registerNetworkCallback(nr, cb)
     }
 
-    var database: AppDatabase? = null
     override fun onCreate() {
         super.onCreate()
+        instance = this
         log("StabilityCheck: App.onCreate() - start")
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         connMgr = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         checkNetworkConnected()
         initNetworkConnectivityCheck()
-        //init database on app start
-        database = AppDatabase.getInstance(applicationContext)
         log("StabilityCheck: App.onCreate() - end")
     }
 }

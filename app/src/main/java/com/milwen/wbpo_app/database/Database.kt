@@ -12,21 +12,22 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDAO
     abstract fun followedUsers(): FollowedUserDAO
 
-    companion object{
+    companion object {
         @Volatile
         private var instance: AppDatabase? = null
 
-        fun getInstance(context: Context):AppDatabase?{
-            if (instance == null){
-                synchronized(AppDatabase::class.java){
-                    instance = Room.databaseBuilder(
-                        context.applicationContext,
-                        AppDatabase::class.java,
-                        "main_database"
-                    ).build()
-                }
+        fun getInstance(context: Context): AppDatabase {
+            return instance ?: synchronized(this) {
+                instance ?: buildDatabase(context).also { instance = it }
             }
-            return instance
+        }
+
+        private fun buildDatabase(context: Context): AppDatabase {
+            return Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                "main_database"
+            ).build()
         }
     }
 }

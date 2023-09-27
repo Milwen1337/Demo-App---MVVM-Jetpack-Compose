@@ -12,15 +12,15 @@ import com.milwen.wbpo_app.userlist.model.LoadedUser
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 data class UserPayload(val users: List<LoadedUser>, val followedUsers: List<FollowedUser>, val fullyLoaded: Boolean = false)
-class UserListViewModel(val app: App): MainViewModel(){
+class UserListViewModel @Inject constructor(): MainViewModel(){
     companion object{
         const val DEFAULT_USER_COUNT = 5
     }
 
     private val repository = AppAPI.getInstance().create(ApiGetUsers::class.java)
-    private val db = app.database
 
     // LiveData holding loaded user list and cached followed user list -> used in View
     private val _users = MutableLiveData<UserPayload>()
@@ -51,7 +51,7 @@ class UserListViewModel(val app: App): MainViewModel(){
     fun changeFollowState(user: LoadedUser){
         viewModelScope.launch(Dispatchers.Main){
             withContext(Dispatchers.IO){
-                db?.let { db->
+                appDatabase.let { db->
                     val foundUser = db.followedUsers().getFollowedUserOrNull(user.id)
                     foundUser?.let { fu->
                         db.followedUsers().deleteFollowedUser(fu)
@@ -112,7 +112,7 @@ class UserListViewModel(val app: App): MainViewModel(){
                     incrementPages(userData.page, userData.total_pages)
                     val currentUsers = users.value?.users.orEmpty().toMutableList()
                     val followedUsers = withContext(Dispatchers.IO) {
-                        db?.followedUsers()?.getFollowedUsers().orEmpty()
+                        appDatabase.followedUsers().getFollowedUsers().orEmpty()
                     }
                     currentUsers.apply {
                         addAll(userData.data)

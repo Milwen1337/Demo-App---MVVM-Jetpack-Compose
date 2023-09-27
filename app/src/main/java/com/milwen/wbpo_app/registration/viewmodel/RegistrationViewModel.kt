@@ -14,10 +14,10 @@ import com.milwen.wbpo_app.onDoubleTouchProtectClick
 import com.milwen.wbpo_app.registration.model.UserRegisterData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class RegistrationViewModel(val app: App): MainViewModel() {
+class RegistrationViewModel @Inject constructor(): MainViewModel() {
     private val repository = AppAPI.getInstance().create(ApiRegisterUser::class.java)
-    private val db = app.database
 
     var email = MutableLiveData<String>()
     var password = MutableLiveData<String>()
@@ -92,10 +92,8 @@ class RegistrationViewModel(val app: App): MainViewModel() {
                     App.log("RegistrationViewModel: registerUser: response success: ${success.data.toString()}")
                     withContext(Dispatchers.IO){
                         success.data?.let { user->
-                            db?.let { db->
-                                App.log("RegistrationViewModel: registerUser: response success: insertUser")
-                                db.userDao().insertUser(user)
-                            }
+                            App.log("RegistrationViewModel: registerUser: response success: insertUser")
+                            appDatabase.userDao().insertUser(user)
                         }
                     }
                     _isRegButtonEnabled.postValue(true)

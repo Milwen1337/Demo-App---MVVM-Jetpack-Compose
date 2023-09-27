@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.request.RequestOptions
@@ -21,10 +21,11 @@ import com.milwen.wbpo_app.setVisibleNotGone
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.model.LoadedUser
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModel
-import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModelFactory
 import com.bumptech.glide.Glide
 import com.milwen.wbpo_app.userlist.viewmodel.UserPayload
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class UserListFragment: BaseFragment() {
     override val titleId: Int
         get() = R.string.user_list_fragment_title
@@ -32,11 +33,7 @@ class UserListFragment: BaseFragment() {
         get() = "UserListFragment"
 
     private val _adapter = Adapter()
-    private lateinit var viewModel: UserListViewModel
-    override fun onCreate(si: Bundle?) {
-        super.onCreate(si)
-        viewModel = ViewModelProvider(this, UserListViewModelFactory(app))[UserListViewModel::class.java]
-    }
+    private val viewModel: UserListViewModel by viewModels()
 
     private lateinit var binding: UserListFragmentBinding
     override fun onCreateView(

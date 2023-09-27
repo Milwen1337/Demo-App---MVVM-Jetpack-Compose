@@ -5,14 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import com.milwen.wbpo_app.R
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.database.AppDatabase
 import com.milwen.wbpo_app.databinding.RegistrationFragmentBinding
 import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModel
 import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModelFactory
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
+import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModel
+import javax.inject.Inject
 
 class RegistrationFragment: BaseFragment() {
     override val titleId: Int
@@ -21,12 +25,7 @@ class RegistrationFragment: BaseFragment() {
         get() = "RegistrationFragment"
 
 
-    private lateinit var viewModel: RegistrationViewModel
-    override fun onCreate(si: Bundle?) {
-        super.onCreate(si)
-        App.log("RegistrationViewModel: fragmentInit")
-        viewModel = ViewModelProvider(this, RegistrationViewModelFactory(app))[RegistrationViewModel::class.java]
-    }
+    private val viewModel: RegistrationViewModel by viewModels()
 
     private lateinit var binding: RegistrationFragmentBinding
     override fun onCreateView(

@@ -5,23 +5,31 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.database.AppDatabase
 import com.milwen.wbpo_app.registration.view.RegistrationFragment
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.ArrayList
 import java.util.HashMap
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     var isFragmentStarting = false
+    @Inject
     lateinit var app: App
+
+    @Inject
+    lateinit var database: AppDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        app = application as App
         supportActionBar?.let {  }
         if (savedInstanceState == null) {
             registerOrList()
@@ -30,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun registerOrList(){
         CoroutineScope(Dispatchers.IO).launch {
-            app.database?.userDao()?.getUser()?.let {
+            database.userDao().getUser()?.let {
                 startFragment(UserListFragment())
             }?:kotlin.run {
                 startFragment(RegistrationFragment())

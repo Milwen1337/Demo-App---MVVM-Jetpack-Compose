@@ -18,9 +18,6 @@ import javax.inject.Inject
 @HiltViewModel
 open class MainViewModel @Inject constructor(): ViewModel() {
 
-    @Inject
-    lateinit var appDatabase: AppDatabase
-
     fun <T> apiCall(
         apiCall: suspend () -> Response<T>,
         onError: (ApiCallResponse.Error)->Unit,

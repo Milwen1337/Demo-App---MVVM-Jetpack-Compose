@@ -6,18 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import com.milwen.wbpo_app.R
 import com.milwen.wbpo_app.application.App
-import com.milwen.wbpo_app.database.AppDatabase
 import com.milwen.wbpo_app.databinding.RegistrationFragmentBinding
 import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModel
-import com.milwen.wbpo_app.registration.viewmodel.RegistrationViewModelFactory
 import com.milwen.wbpo_app.ui.main.BaseFragment
 import com.milwen.wbpo_app.userlist.view.UserListFragment
-import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class RegistrationFragment: BaseFragment() {

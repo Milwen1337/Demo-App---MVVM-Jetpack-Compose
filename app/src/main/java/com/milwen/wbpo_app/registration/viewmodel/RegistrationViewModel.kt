@@ -9,14 +9,19 @@ import com.milwen.wbpo_app.MainViewModel
 import com.milwen.wbpo_app.api.ApiRegisterUser
 import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.database.AppDatabase
 import com.milwen.wbpo_app.isEmailValid
 import com.milwen.wbpo_app.onDoubleTouchProtectClick
 import com.milwen.wbpo_app.registration.model.UserRegisterData
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class RegistrationViewModel @Inject constructor(): MainViewModel() {
+@HiltViewModel
+class RegistrationViewModel @Inject constructor(
+    private val appDatabase: AppDatabase
+): MainViewModel() {
     private val repository = AppAPI.getInstance().create(ApiRegisterUser::class.java)
 
     var email = MutableLiveData<String>()

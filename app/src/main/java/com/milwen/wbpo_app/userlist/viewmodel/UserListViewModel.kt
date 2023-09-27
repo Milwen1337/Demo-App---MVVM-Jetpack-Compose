@@ -7,15 +7,20 @@ import com.milwen.wbpo_app.MainViewModel
 import com.milwen.wbpo_app.api.ApiGetUsers
 import com.milwen.wbpo_app.api.AppAPI
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.database.AppDatabase
 import com.milwen.wbpo_app.userlist.model.FollowedUser
 import com.milwen.wbpo_app.userlist.model.LoadedUser
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 data class UserPayload(val users: List<LoadedUser>, val followedUsers: List<FollowedUser>, val fullyLoaded: Boolean = false)
-class UserListViewModel @Inject constructor(): MainViewModel(){
+@HiltViewModel
+class UserListViewModel @Inject constructor(
+    private val appDatabase: AppDatabase
+): MainViewModel(){
     companion object{
         const val DEFAULT_USER_COUNT = 5
     }

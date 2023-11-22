@@ -19,10 +19,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.milwen.wbpo_app.*
 import com.milwen.wbpo_app.R
 import com.milwen.wbpo_app.application.App
-import com.milwen.wbpo_app.colorAccept
-import com.milwen.wbpo_app.colorDecline
 import com.milwen.wbpo_app.userlist.model.LoadedUser
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModelCompose
 import com.milwen.wbpo_app.userlist.viewmodel.UserPayload
@@ -190,7 +189,9 @@ fun followButton(userItem: UserItem, onStateUpdate: ()->Unit){
     Button(
         colors = ButtonDefaults.buttonColors(
             containerColor = containerColor,
-            contentColor = iconColor
+            contentColor = iconColor,
+            disabledContainerColor = colorGrey,
+            disabledContentColor = colorWhite
         ),
         interactionSource = interactionSource,
         onClick = { onStateUpdate() },
@@ -210,7 +211,10 @@ fun followButton(userItem: UserItem, onStateUpdate: ()->Unit){
 fun FollowButtonPreview() {
     val userItem = UserItem(
         LoadedUser(
-            0, "mockuser@test.com", "John", "Doe", "https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-picture-icon-png-image_695350.jpg"),
+            0,
+            "mockuser@test.com",
+            "John", "Doe",
+            "https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-picture-icon-png-image_695350.jpg"),
         false
     )
 

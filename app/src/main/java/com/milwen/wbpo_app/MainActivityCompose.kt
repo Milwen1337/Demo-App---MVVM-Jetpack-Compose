@@ -3,7 +3,11 @@ package com.milwen.wbpo_app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -14,6 +18,7 @@ import com.milwen.wbpo_app.application.App
 import com.milwen.wbpo_app.database.AppDatabase
 import com.milwen.wbpo_app.registration.view.RegistrationScreen
 import com.milwen.wbpo_app.splash.view.SplashScreen
+import com.milwen.wbpo_app.ui.theme.AppTheme
 import com.milwen.wbpo_app.userlist.view.UserListScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -30,7 +35,14 @@ class MainActivityCompose: ComponentActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApp(navController = rememberNavController())
+            AppTheme{
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    MyApp(navController = rememberNavController())
+                }
+            }
         }
     }
 

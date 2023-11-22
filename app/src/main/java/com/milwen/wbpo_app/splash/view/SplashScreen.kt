@@ -20,6 +20,7 @@ fun SplashScreen(
     viewModel: SplashViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    App.log("Navigation: SplashScreen")
     val viewState = viewModel.viewState.collectAsState(initial = null).value
 
     // UI layout
@@ -32,7 +33,6 @@ fun SplashScreen(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Email Field
                 Image(painter = painterResource(id = R.drawable.ic_launcher_foreground), contentDescription = null)
                 if (viewState is SplashViewModel.SplashViewState.Loading) {
                     LinearProgressIndicator(

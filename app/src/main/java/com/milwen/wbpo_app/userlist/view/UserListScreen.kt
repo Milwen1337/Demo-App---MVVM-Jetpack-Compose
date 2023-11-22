@@ -1,22 +1,19 @@
 package com.milwen.wbpo_app.userlist.view
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +21,8 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.milwen.wbpo_app.R
 import com.milwen.wbpo_app.application.App
+import com.milwen.wbpo_app.colorAccept
+import com.milwen.wbpo_app.colorDecline
 import com.milwen.wbpo_app.userlist.model.LoadedUser
 import com.milwen.wbpo_app.userlist.viewmodel.UserListViewModelCompose
 import com.milwen.wbpo_app.userlist.viewmodel.UserPayload
@@ -132,7 +131,12 @@ fun UserItemRow(userItem: UserItem, onStateUpdate: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             userAvatar(userItem.t.avatar)
-            userData(userItem)
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                userData(userItem)
+            }
             followButton(userItem){ onStateUpdate.invoke() }
         }
     }
@@ -160,7 +164,6 @@ fun userAvatar(url: String){
 fun userData(userItem: UserItem){
     Column(
         modifier = Modifier
-            .fillMaxWidth()
             .padding(8.dp)
     ) {
         Text(
@@ -180,37 +183,40 @@ fun followButton(userItem: UserItem, onStateUpdate: ()->Unit){
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
-    val colorFollow = Color(R.color.color_accept)
-    val colorUnfollow = Color(R.color.color_decline)
-    val buttonColorState = if (userItem.isFollowed){
-        colorUnfollow.copy(alpha = if (isPressed) 0.4f else 1f)
-    } else {
-        colorFollow.copy(alpha = if (isPressed) 0.4f else 1f)
-    }
+    val iconColor = if (userItem.isFollowed){ colorAccept
+    } else { colorDecline }
+    val containerColor = iconColor.copy(alpha = if (isPressed) 0.4f else 0f)
 
-    Box(
-        modifier = Modifier
-            .background(
-                color = buttonColorState,
-                shape = CircleShape
-            )
-            .clickable(
-                interactionSource = interactionSource,
-                indication = rememberRipple(bounded = false)
-            ) {}
-            .padding(8.dp)
+    Button(
+        colors = ButtonDefaults.buttonColors(
+            containerColor = containerColor,
+            contentColor = iconColor
+        ),
+        interactionSource = interactionSource,
+        onClick = { onStateUpdate() },
+        shape = CircleShape,
+        contentPadding = PaddingValues(0.dp)
     ) {
-        Button(
-            onClick = { onStateUpdate() },
-        ) {
-            Icon(
-                painter = painterResource(id = if (userItem.isFollowed) R.drawable.user_follow else R.drawable.user_unfollow),
-                contentDescription = null,
-                tint = if (userItem.isFollowed) colorFollow else colorUnfollow
-            )
-        }
+        Icon(
+            modifier = Modifier.size(20.dp),
+            painter = painterResource(id = if (userItem.isFollowed) R.drawable.user_follow else R.drawable.user_unfollow),
+            contentDescription = null
+        )
     }
 }
+
+@Composable
+@Preview
+fun FollowButtonPreview() {
+    val userItem = UserItem(
+        LoadedUser(
+            0, "mockuser@test.com", "John", "Doe", "https://png.pngtree.com/png-vector/20190223/ourmid/pngtree-vector-picture-icon-png-image_695350.jpg"),
+        false
+    )
+
+    followButton(userItem = userItem) {}
+}
+
 
 @Composable
 fun showDataLoadingError(message: String) {

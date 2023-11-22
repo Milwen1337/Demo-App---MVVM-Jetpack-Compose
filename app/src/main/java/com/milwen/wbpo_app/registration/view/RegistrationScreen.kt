@@ -72,7 +72,7 @@ fun RegistrationScreen(
                     modifier = Modifier.fillMaxWidth(),
                     enabled = viewModel.isRegButtonEnabled.value && viewModel.isDataValid.value
                 ) {
-                    Text(text = "Register")
+                    Text(text = context.getString(R.string.button_register))
                 }
             }
         }

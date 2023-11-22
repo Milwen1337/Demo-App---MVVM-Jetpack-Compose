@@ -36,6 +36,7 @@ class MainActivityCompose: ComponentActivity(){
 
     @Composable
     fun MyApp(navController: NavHostController) {
+        App.log("Navigation: MainActivity")
         NavHost(
             navController = navController,
             startDestination = "splashScreen"
@@ -51,9 +52,11 @@ class MainActivityCompose: ComponentActivity(){
                 RegistrationScreen(navController = navController, session = session)
             }
             composable("registrationScreen") {
+                App.log("Navigation: SplashScreen -> RegistrationScreen")
                 RegistrationScreen(navController = navController)
             }
             composable("userListScreen") {
+                App.log("Navigation: SplashScreen -> UserListScreen")
                 UserListScreen(navController = navController)
             }
         }

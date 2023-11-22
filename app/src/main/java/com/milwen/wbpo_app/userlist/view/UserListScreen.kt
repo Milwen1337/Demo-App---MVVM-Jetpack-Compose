@@ -10,7 +10,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,11 +49,11 @@ fun UserListScreen(
 
     Scaffold(
         topBar = { TopAppBar(title = { Text(text = context.getString(R.string.user_list_fragment_title)) }) }
-    ) {
+    ) { contentPadding ->
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
+                .padding(contentPadding)
+                .fillMaxSize(),
         ) {
             if (maybeLoadAgain.value) {
                 Button(
@@ -186,22 +189,21 @@ fun followButton(userItem: UserItem, onStateUpdate: ()->Unit){
     } else { colorDecline }
     val containerColor = iconColor.copy(alpha = if (isPressed) 0.4f else 0f)
 
-    Button(
-        colors = ButtonDefaults.buttonColors(
+    IconButton(
+        colors = IconButtonDefaults.iconButtonColors(
             containerColor = containerColor,
             contentColor = iconColor,
             disabledContainerColor = colorGrey,
             disabledContentColor = colorWhite
         ),
         interactionSource = interactionSource,
-        onClick = { onStateUpdate() },
-        shape = CircleShape,
-        contentPadding = PaddingValues(0.dp)
+        onClick = { onStateUpdate() }
     ) {
         Icon(
             modifier = Modifier.size(20.dp),
             painter = painterResource(id = if (userItem.isFollowed) R.drawable.user_follow else R.drawable.user_unfollow),
-            contentDescription = null
+            contentDescription = "Follow Button Icon",
+            tint = iconColor.copy(alpha = 1f)
         )
     }
 }

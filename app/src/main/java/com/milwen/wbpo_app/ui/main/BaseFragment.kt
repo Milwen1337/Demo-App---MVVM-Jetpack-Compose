@@ -2,6 +2,7 @@ package com.milwen.wbpo_app.ui.main
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.milwen.wbpo_app.MainActivity
 import com.milwen.wbpo_app.R
 import com.milwen.wbpo_app.application.App
@@ -24,6 +25,7 @@ abstract class BaseFragment : Fragment(), CoroutineScope by MainScope() {
     open val animOut = R.animator.fade_out
 
     val mainActivity: MainActivity? get() = activity as? MainActivity
+    val navController by lazy { findNavController() }
 
     override fun onCreate(si: Bundle?) {
         super.onCreate(si)

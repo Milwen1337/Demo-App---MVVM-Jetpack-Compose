@@ -17,6 +17,8 @@ import com.milwen.wbpo_app.onDoubleTouchProtectClick
 import com.milwen.wbpo_app.registration.model.UserRegisterData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -26,11 +28,21 @@ class RegistrationViewModelCompose @Inject constructor(
 ): MainViewModel() {
     private val repository = AppAPI.getInstance().create(ApiRegisterUser::class.java)
 
-    var email = MutableLiveData<String>()
-    var password = MutableLiveData<String>()
+    private val _email = MutableStateFlow("")
+    val email = _email.asStateFlow()
 
-    private val emailObserver = Observer<String> { validateData() }
-    private val passwordObserver = Observer<String> { validateData() }
+    fun setEmail(value: String) {
+        _email.value = value
+        validateData()
+    }
+
+    private val _password = MutableStateFlow("")
+    val password = _password.asStateFlow()
+
+    fun setPassword(value: String) {
+        _password.value = value
+        validateData()
+    }
 
     companion object {
         @BindingAdapter("onDoubleTouchProtectClick")
@@ -60,22 +72,13 @@ class RegistrationViewModelCompose @Inject constructor(
      * email = eve.holt@reqres.in
      * password = pistol
      */
-    init {
-        App.log("RegistrationViewModel: init")
-        initFieldObservers()
-    }
-
-    private fun initFieldObservers(){
-        email.observeForever(emailObserver)
-        password.observeForever(passwordObserver)
-    }
 
     private fun validateData(){
         App.log("RegistrationViewModel: validateData")
-        val mEmail: String? = email.value
-        val mPassword: String? = password.value
+        val mEmail: String = email.value
+        val mPassword: String = password.value
         App.log("RegistrationViewModel: validateData: $mEmail, $mPassword")
-        _isDataValid.value = (!mPassword.isNullOrBlank() && !mEmail.isNullOrBlank() && isEmailValid(mEmail))
+        _isDataValid.value = (mPassword.isNotBlank() && mEmail.isNotBlank() && isEmailValid(mEmail))
     }
 
     fun onRegister() {
@@ -87,33 +90,24 @@ class RegistrationViewModelCompose @Inject constructor(
         App.log("RegistrationViewModel: registerUser")
         val email = email.value
         val password = password.value
-        if (email != null && password != null){
-            apiCall(
-                { repository.registerUser(UserRegisterData(email, password)) },
-                onError = { err->
-                    _isRegButtonEnabled.value = (true)
-                    err.apiCallError?.error?.let { e-> _toastMessage.value = (e) }
-                    App.log("RegistrationViewModel: registerUser: response error: ${err.apiCallError?.error}")
-                },
-                onSuccess = { success ->
-                    App.log("RegistrationViewModel: registerUser: response success: ${success.data.toString()}")
-                    withContext(Dispatchers.IO){
-                        success.data?.let { user->
-                            App.log("RegistrationViewModel: registerUser: response success: insertUser")
-                            appDatabase.userDao().insertUser(user)
-                        }
+        apiCall(
+            { repository.registerUser(UserRegisterData(email, password)) },
+            onError = { err->
+                _isRegButtonEnabled.value = (true)
+                err.apiCallError?.error?.let { e-> _toastMessage.value = (e) }
+                App.log("RegistrationViewModel: registerUser: response error: ${err.apiCallError?.error}")
+            },
+            onSuccess = { success ->
+                App.log("RegistrationViewModel: registerUser: response success: ${success.data.toString()}")
+                withContext(Dispatchers.IO){
+                    success.data?.let { user->
+                        App.log("RegistrationViewModel: registerUser: response success: insertUser")
+                        appDatabase.userDao().insertUser(user)
                     }
-                    _isRegButtonEnabled.value = (true)
-                    _finishRegistration.value = (true)
                 }
-            )
-        }
+                _isRegButtonEnabled.value = (true)
+                _finishRegistration.value = (true)
+            }
+        )
     }
-
-    override fun onCleared() {
-        super.onCleared()
-        email.removeObserver(emailObserver)
-        password.removeObserver(passwordObserver)
-    }
-
 }

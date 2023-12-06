@@ -10,10 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -203,7 +200,7 @@ fun followButton(userItem: UserItem, onStateUpdate: ()->Unit){
             modifier = Modifier.size(20.dp),
             painter = painterResource(id = if (userItem.isFollowed) R.drawable.user_follow else R.drawable.user_unfollow),
             contentDescription = "Follow Button Icon",
-            tint = iconColor.copy(alpha = 1f)
+            tint = iconColor
         )
     }
 }

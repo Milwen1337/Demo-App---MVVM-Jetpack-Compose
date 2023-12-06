@@ -7,4 +7,6 @@
     <string name="button_register">Register</string>
     <string name="user_list_fragment_title">User list</string>
     <string name="button_load_again">Load again</string>
+    <string name="email_invalid_message">Email format is invalid.</string>
+    <string name="password_invalid_message_1">Password must be at least 4 characters long.</string>
 </resources>

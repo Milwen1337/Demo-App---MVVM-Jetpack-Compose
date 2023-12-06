@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withContext
+import java.util.regex.Pattern
 import javax.inject.Inject
 
 @HiltViewModel
@@ -66,6 +67,12 @@ class RegistrationViewModelCompose @Inject constructor(
     private val _toastMessage = mutableStateOf("")
     val toastMessage: State<String> = _toastMessage
 
+    private val _isEmailValid = mutableStateOf(false)
+    val isEmailValid: State<Boolean> = _isEmailValid
+
+    private val _isPasswordValid = mutableStateOf(false)
+    val isPasswordValid: State<Boolean> = _isPasswordValid
+
 
     /**
      * For testing based on API documentation you have to type these credentials for successful registration
@@ -75,10 +82,19 @@ class RegistrationViewModelCompose @Inject constructor(
 
     private fun validateData(){
         App.log("RegistrationViewModel: validateData")
-        val mEmail: String = email.value
+        validateEmail()
+        validatePassword()
+        _isDataValid.value = (_isEmailValid.value && _isPasswordValid.value)
+    }
+
+    private fun validatePassword(){
         val mPassword: String = password.value
-        App.log("RegistrationViewModel: validateData: $mEmail, $mPassword")
-        _isDataValid.value = (mPassword.isNotBlank() && mEmail.isNotBlank() && isEmailValid(mEmail))
+        _isPasswordValid.value = mPassword.length > 3
+    }
+
+    private fun validateEmail(){
+        val mEmail: String = email.value
+        _isEmailValid.value = mEmail.isNotBlank() && isEmailValid(mEmail)
     }
 
     fun onRegister() {

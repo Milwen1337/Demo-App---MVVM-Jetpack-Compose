@@ -1,2 +1,2 @@
-# WBPO-Test-App
+# Demo App - MVVM/Jetpack
 Test App project
